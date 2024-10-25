@@ -28,24 +28,25 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
 
     @Override
     public void onMsgFromFragToMain(String sender, String strValue) {
-        if (sender.equals("BLUE-FRAG")) {
+
+        if (sender.equals("STUDENT_LIST")) {
             try {
-                fragmentStudentInfo.onMsgFromMainToFragment("BLUE-FRAG", strValue);
+                fragmentStudentInfo.onMsgFromMainToFragment("STUDENT_LIST", strValue);
             }
             catch (Exception e) {
                 Log.e("ERROR", e.getMessage());
             }
         }
-        if (sender.equals("BLUE-FRAG-ID")){
+        if (sender.equals("STUDENT_LIST_CHOSEN_STUDENT")){
             try {
-                fragmentStudentInfo.onMsgFromMainToFragment("BLUE-FRAG-ID", strValue);
+                fragmentStudentInfo.onMsgFromMainToFragment("STUDENT_LIST_CHOSEN_STUDENT", strValue);
             }
             catch (Exception e) {
                 Log.e("ERROR", e.getMessage());
             }
         }
-        if (sender.equals("RED-FRAG")) {
-            fragmentStudentList.onMsgFromMainToFragment("RED-FRAG", strValue);
+        if (sender.equals("STUDENT_INFO")) {
+            fragmentStudentList.onMsgFromMainToFragment("STUDENT_INFO", strValue);
         }
     }
 }

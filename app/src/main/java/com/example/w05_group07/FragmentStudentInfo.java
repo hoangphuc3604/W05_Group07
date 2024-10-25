@@ -2,19 +2,17 @@ package com.example.w05_group07;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 public class FragmentStudentInfo extends Fragment implements FragmentCallbacks {
-    private Student students[] = {new Student("Nguyen Van A", "A1", 9.0),
+    private final Student[] students = {new Student("Nguyen Van A", "A1", 9.0),
             new Student("Nguyen Van B", "A1", 5.5),
             new Student("Nguyen Van C", "A1", 6.3),
             new Student("Nguyen Van D", "A2", 7.6),
@@ -28,10 +26,11 @@ public class FragmentStudentInfo extends Fragment implements FragmentCallbacks {
             new Student("Nguyen Van L", "A4", 6.9),
     };
 
-    MainActivity main; Context context = null;
+    MainActivity main;
+    Context context = null;
     TextView txtId, txtName, txtClass, txtScore;
     Button btnFirst, btnPrevious, btnNext, btnLast;
-    Toast toast;
+
     public static FragmentStudentInfo newInstance(String strArg) {
         FragmentStudentInfo fragmentStudentInfo = new FragmentStudentInfo();
         Bundle args = new Bundle();
@@ -39,6 +38,7 @@ public class FragmentStudentInfo extends Fragment implements FragmentCallbacks {
         fragmentStudentInfo.setArguments(args);
         return fragmentStudentInfo;
     }
+
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -52,59 +52,65 @@ public class FragmentStudentInfo extends Fragment implements FragmentCallbacks {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
-        LinearLayout layout_red = (LinearLayout) inflater.inflate(R.layout.layout_student_info, null);
-        txtId = (TextView) layout_red.findViewById(R.id.txt_student_id);
-        txtName = (TextView) layout_red.findViewById(R.id.txt_student_name);
-        txtClass = (TextView) layout_red.findViewById(R.id.txt_student_class);
-        txtScore = (TextView) layout_red.findViewById(R.id.txt_student_score);
-        try {
-            Bundle arguments = getArguments();
-        }
-        catch (Exception e) {
-            Log.e("RED FRAGMENT ERROR: ", e.getMessage());
-        }
+        LinearLayout layout_student_info = (LinearLayout) inflater.inflate(R.layout.layout_student_info, null);
 
-        btnFirst = (Button) layout_red.findViewById(R.id.btn_first);
-        btnPrevious = (Button) layout_red.findViewById(R.id.btn_previous);
-        btnNext = (Button) layout_red.findViewById(R.id.btn_next);
-        btnLast = (Button) layout_red.findViewById(R.id.btn_last);
+        txtId = layout_student_info.findViewById(R.id.txt_student_id);
+        txtName = layout_student_info.findViewById(R.id.txt_student_name);
+        txtClass = layout_student_info.findViewById(R.id.txt_student_class);
+        txtScore = layout_student_info.findViewById(R.id.txt_student_score);
+
+        Bundle arguments = getArguments();
+
+        btnFirst = layout_student_info.findViewById(R.id.btn_first);
+        btnPrevious = layout_student_info.findViewById(R.id.btn_previous);
+        btnNext = layout_student_info.findViewById(R.id.btn_next);
+        btnLast = layout_student_info.findViewById(R.id.btn_last);
 
         btnFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.onMsgFromFragToMain("RED-FRAG", "FIRST");
+                main.onMsgFromFragToMain("STUDENT_INFO", "FIRST");
             }
         });
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.onMsgFromFragToMain("RED-FRAG", "PREVIOUS");
+                main.onMsgFromFragToMain("STUDENT_INFO", "PREVIOUS");
             }
         });
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.onMsgFromFragToMain("RED-FRAG", "NEXT");
+                main.onMsgFromFragToMain("STUDENT_INFO", "NEXT");
             }
         });
         btnLast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.onMsgFromFragToMain("RED-FRAG", "LAST");
+                main.onMsgFromFragToMain("STUDENT_INFO", "LAST");
             }
         });
-        return layout_red;
+        return layout_student_info;
     }
 
     @Override
     public void onMsgFromMainToFragment(String sender, String strValue) {
-        if (sender.equals("BLUE-FRAG-ID")) {
+        if (sender.equals("STUDENT_LIST_CHOSEN_STUDENT")) {
             txtId.setText(strValue);
         }
-        if (sender.equals("BLUE-FRAG")) {
-            txtName.setText("Họ tên: " + students[Integer.parseInt(strValue)].studentName);
-            txtClass.setText("Lớp: " + students[Integer.parseInt(strValue)].studentClass);
-            txtScore.setText("Điểm trung bình: " + String.valueOf(students[Integer.parseInt(strValue)].studentScore));
+        if (sender.equals("STUDENT_LIST")) {
+
+            btnNext.setEnabled(!strValue.equals("REACHED_END"));
+            btnLast.setEnabled(!strValue.equals("REACHED_END"));
+            btnPrevious.setEnabled(!strValue.equals("REACHED_START"));
+            btnFirst.setEnabled(!strValue.equals("REACHED_START"));
+
+            if (strValue.matches("\\d+")){
+                txtName.setText("Họ tên: " + students[Integer.parseInt(strValue)].studentName);
+                txtClass.setText("Lớp: " + students[Integer.parseInt(strValue)].studentClass);
+                txtScore.setText("Điểm trung bình: " + String.valueOf(students[Integer.parseInt(strValue)].studentScore));
+            }
+
         }
     }
 }
