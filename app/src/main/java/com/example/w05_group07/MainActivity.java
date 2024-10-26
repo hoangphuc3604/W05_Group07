@@ -24,6 +24,13 @@ public class MainActivity extends FragmentActivity implements MainCallbacks {
         fragmentStudentInfo = FragmentStudentInfo.newInstance("first-red");
         ft.replace(R.id.student_info, fragmentStudentInfo);
         ft.commit();
+
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("DEBUG", "Main activity started");
     }
 
     @Override

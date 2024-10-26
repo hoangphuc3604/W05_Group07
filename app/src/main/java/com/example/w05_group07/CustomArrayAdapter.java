@@ -2,6 +2,7 @@ package com.example.w05_group07;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, View contextView, @NonNull ViewGroup parent) {
-
+        Log.i("DEBUG", "Creating a listview item");
         View row = null;
         if (contextView != null){
             row = contextView;
@@ -38,4 +39,6 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
 
         return row;
     }
+
+
 }

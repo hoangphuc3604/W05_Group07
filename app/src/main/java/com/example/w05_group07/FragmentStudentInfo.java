@@ -2,6 +2,7 @@ package com.example.w05_group07;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,12 @@ public class FragmentStudentInfo extends Fragment implements FragmentCallbacks {
             }
         });
         return layout_student_info;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("DEBUG", "Fragment student info started");
     }
 
     @Override

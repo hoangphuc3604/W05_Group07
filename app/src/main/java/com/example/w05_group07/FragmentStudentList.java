@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-public class FragmentStudentList extends Fragment implements FragmentCallbacks{
+public class FragmentStudentList extends Fragment implements FragmentCallbacks {
     MainActivity main = null;
     Context context = null;
     TextView textChosenStudent;
@@ -22,10 +22,10 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks{
 
     int previouslyClickedPosition = -1;
     private final String[] ids = {"A1001", "A1002", "A1003", "A2001", "A2002", "A2003",
-                            "A3001", "A3002", "A3003", "A4001", "A4002", "A4003"};
+            "A3001", "A3002", "A3003", "A4001", "A4002", "A4003"};
     private final Integer[] avatars = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d
-                                , R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h
-                                , R.drawable.i, R.drawable.j, R.drawable.k, R.drawable.l};
+            , R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h
+            , R.drawable.i, R.drawable.j, R.drawable.k, R.drawable.l};
 
     public static FragmentStudentList newInstance(String strArg) {
         FragmentStudentList fragmentStudentList = new FragmentStudentList();
@@ -41,8 +41,7 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks{
         try {
             context = requireActivity();
             main = (MainActivity) requireActivity();
-        }
-        catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             throw new IllegalStateException("Main must implement callback");
         }
     }
@@ -63,7 +62,7 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("DEBUG", "click event" );
+                Log.i("DEBUG", "click event");
                 main.onMsgFromFragToMain("STUDENT_LIST", String.valueOf(position));
                 main.onMsgFromFragToMain("STUDENT_LIST_CHOSEN_STUDENT", ids[position]);
 
@@ -77,22 +76,52 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks{
         return layout_student_list_item;
     }
 
-    public void onSelectedStudentChanged(int new_position){
-        if (previouslyClickedPosition >= 0 && previouslyClickedPosition <= listView.getCount() - 1){
+    public void onSelectedStudentChanged(int new_position) {
+        if (previouslyClickedPosition >= 0 && previouslyClickedPosition <= listView.getCount() - 1) {
             View last_view = listView.getChildAt(previouslyClickedPosition);
             last_view.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
         }
-        if (new_position >= 0 && new_position <= listView.getCount() - 1){
+        if (new_position >= 0 && new_position <= listView.getCount() - 1) {
             View current_view = listView.getChildAt(new_position);
             current_view.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_alpha));
             previouslyClickedPosition = new_position;
         }
-        if (new_position == listView.getCount() - 1){
+        if (new_position == listView.getCount() - 1) {
             main.onMsgFromFragToMain("STUDENT_LIST", "REACHED_END");
         }
-        if (new_position == 0){
+        if (new_position == 0) {
             main.onMsgFromFragToMain("STUDENT_LIST", "REACHED_START");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("DEBUG", "Fragment student list started");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null && listView.getCount() > 0) {
+                    // listView.getCount() returns adapter's size
+                    while (listView.getChildCount() < listView.getCount()) {
+                        try {
+                            //Wait for all the listview items to be rendered
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Select the first items
+                            listView.performItemClick(listView.getChildAt(0), 0, 0);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     @Override
