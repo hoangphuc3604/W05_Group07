@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -95,6 +97,12 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.i("DEBUG", "Fragment student list view fully created");
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         Log.i("DEBUG", "Fragment student list started");
@@ -103,9 +111,10 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks {
             public void run() {
                 if (getActivity() != null && listView.getCount() > 0) {
                     // listView.getCount() returns adapter's size
+                    // listView.getChildCount() returns number of child views
+                    // Wait for all the listview items to be created
                     while (listView.getChildCount() < listView.getCount()) {
                         try {
-                            //Wait for all the listview items to be rendered
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
@@ -117,6 +126,7 @@ public class FragmentStudentList extends Fragment implements FragmentCallbacks {
                         public void run() {
                             // Select the first items
                             listView.performItemClick(listView.getChildAt(0), 0, 0);
+                            Log.i("DEBUG", "Fragment student list selected the first child");
                         }
                     });
                 }

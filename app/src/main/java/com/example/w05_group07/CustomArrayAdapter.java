@@ -23,11 +23,11 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, View contextView, @NonNull ViewGroup parent) {
-        Log.i("DEBUG", "Creating a listview item");
         View row = null;
         if (contextView != null){
             row = contextView;
         } else {
+            Log.i("DEBUG",  String.format("Creating a listview item at %d/%d", position+1, getCount()));
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(R.layout.list_item, null);
         }
